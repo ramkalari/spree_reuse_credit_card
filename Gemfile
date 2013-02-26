@@ -11,6 +11,7 @@ group :test do
   gem 'database_cleaner', '0.7'
   gem 'factory_girl_rails', '~> 1.7.0'
   gem 'ffaker'
+  gem 'launchy'
   gem 'rspec-rails',  '~> 2.12.0'
   gem 'sqlite3'
 end

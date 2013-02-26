@@ -66,6 +66,7 @@ GEM
       i18n (~> 0.6)
       multi_json (~> 1.0)
     acts_as_list (0.1.4)
+    addressable (2.3.3)
     akami (1.2.0)
       gyoku (>= 0.4.0)
       nokogiri (>= 1.4.0)
@@ -133,6 +134,8 @@ GEM
       actionpack (>= 3.0.0)
       activesupport (>= 3.0.0)
       railties (>= 3.0.0)
+    launchy (2.2.0)
+      addressable (~> 2.3)
     mail (2.4.4)
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
@@ -278,6 +281,7 @@ DEPENDENCIES
   database_cleaner (= 0.7)
   factory_girl_rails (~> 1.7.0)
   ffaker
+  launchy
   pry-rails
   rspec-rails (~> 2.12.0)
   spree_auth_devise!
