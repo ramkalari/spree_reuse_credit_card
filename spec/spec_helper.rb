@@ -10,17 +10,6 @@ require 'spree/core/url_helpers'
 # in spec/support/ and its subdirectories.
 Dir[File.join(File.dirname(__FILE__), "support/**/*.rb")].each {|f| require f }
 
-# wanted to pull in spree's support files..but not in the gem
-module AuthenticationHelpers
-  def sign_in_as!(user)
-    visit '/login'
-    fill_in 'Email', :with => user.email
-    fill_in 'Password', :with => 'secret'
-    click_button 'Login'
-  end
-
-end
-
 # Requires factories defined in spree_core
 require 'spree/core/testing_support/factories'
 
