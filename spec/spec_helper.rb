@@ -4,18 +4,8 @@ require File.expand_path("../dummy/config/environment.rb",  __FILE__)
 
 require 'rspec/rails'
 require 'rspec/autorun'
+require 'spree/core/url_helpers'
 
-require 'factory_girl'
-
-# i thought you didn't have to do this????
-Dir["#{File.dirname(__FILE__)}/factories/**"].each do |f|
-  fp =  File.expand_path(f)
-  require fp
-end
-
-
-require 'capybara/rspec'
-require 'capybara/rails'
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
 Dir[File.join(File.dirname(__FILE__), "support/**/*.rb")].each {|f| require f }
@@ -33,13 +23,6 @@ end
 
 # Requires factories defined in spree_core
 require 'spree/core/testing_support/factories'
-require 'spree/core/testing_support/env'
-#require 'spree/url_helpers'
-
-# requiring above didn't work
-def spree
-  Spree::Core::Engine.routes.url_helpers
-end
 
 RSpec.configure do |config|
   # ## Mock Framework
