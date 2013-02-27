@@ -4,14 +4,6 @@ module CardReuse
 
     payments = Spree::Payment.joins(:order).where('spree_orders.completed_at IS NOT NULL').where('spree_orders.user_id' => user.id).order('spree_orders.created_at').where('spree_payments.source_type' => 'Spree::CreditCard').where('spree_payments.state' => 'completed')
 
-    payments.map do |payment| 
-      src = payment.source
-
-      if src.gateway_payment_profile_id.nil? || src.gateway_customer_profile_id.nil? || src.deleted?
-        nil
-      else
-        src
-      end
-    end.compact.uniq
+    payments.collect(&:source).reject(&:deleted?).compact.uniq
   end
 end
