@@ -27,7 +27,10 @@ describe "PayWithCreditCards" do
       before(:each) do
 
         # set up existing payments with this credit card
-        @credit_card = FactoryGirl.create(:credit_card)
+        @credit_card = FactoryGirl.create(:credit_card,
+                                          :gateway_customer_profile_id => '12345',
+                                          :gateway_payment_profile_id => '54321'
+                                         )
 
         order = FactoryGirl.create(:order_in_delivery_state, :user => user)
         order.update!  # set order.total
