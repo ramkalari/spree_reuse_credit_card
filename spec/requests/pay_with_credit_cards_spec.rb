@@ -46,6 +46,9 @@ describe "PayWithCreditCards" do
         # go to complete
         order.next
         order.state.should eq('complete')
+
+        # complete payment
+        order.payments.first.complete!
       end
 
       it "allows an existing credit card to be chosen from list and used for a purchase" do
