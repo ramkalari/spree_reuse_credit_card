@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 describe "PayWithCreditCards" do
-  describe "GET /checkout/payment" do
+  include OrderHelpers
 
-    let(:user) { FactoryGirl.create(:user) }
+  describe "GET /checkout/payment" do
 
     let(:credit_card) {
       FactoryGirl.create(:credit_card,
@@ -12,72 +12,51 @@ describe "PayWithCreditCards" do
                         )
     }
 
-    before(:each) do
-      @bogus_payment_method = FactoryGirl.create(:bogus_payment_method, :display_on => :front_end)
+    def reset_spree_preferences
+      Spree::Preferences::Store.instance.persistence = false
+      config = Rails.application.config.spree.preferences
+      config.reset
+      yield(config) if block_given?
+    end
 
-      sign_in_as!(user)
+    before(:each) do
+      reset_spree_preferences do |config|
+        config.default_country_id = FactoryGirl.create(:country).id
+      end
+
+      FactoryGirl.create(:bogus_payment_method, :display_on => :front_end)
+      FactoryGirl.create(:free_shipping_method)
+
+      FactoryGirl.create(:product, :name => 'Fake Product')
+      FactoryGirl.create(:user,
+                         :email => 'guy@incogni.to',
+                         :password => 'secret',
+                         :password_confirmation => 'secret')
     end
     attr_reader :bogus_payment_method
 
     context "no existing cards" do
       it "does not show an existing credit card list"do
-        Spree::CreditCard.all.map(&:destroy)
-        visit '/checkout/payment' 
-        page.should_not have_css('table.existing-credit-card-list tbody tr')
+        Spree::CreditCard.destroy_all
+
+        visit '/checkout/payment'
+        page.should have_no_css('table.existing-credit-card-list tbody tr')
       end
     end
 
     context "existing cards" do
       before(:each) do
-        order = FactoryGirl.create(:order_in_delivery_state, :user => user)
-        order.update!  # set order.total
-
-        # go to payment state
-        order.next
-        order.state.should eq('payment')
-
-        # add a payment
-        payment = FactoryGirl.create(:payment,
-                                     :source => credit_card,
-                                     :order => order,
-                                     :amount => order.total,
-                                     :payment_method => bogus_payment_method
-                                    )
-
-        # go to confirm
-        order.next
-        order.state.should eq('confirm')
-
-        # go to complete
-        order.next
-        order.state.should eq('complete')
-
-        # complete payment
-        order.payments.first.complete!
+        add_to_cart('Fake Product')
+        complete_checkout_with_login('guy@incogni.to', 'secret')
+        complete_payment
       end
 
       it "allows an existing credit card to be chosen from list and used for a purchase" do
-        visit spree.products_path
+        add_to_cart('Fake Product')
 
-        find(:xpath, "//div[@class='product-image']/a").click
-        click_button 'Add To Cart'
-        click_button 'Checkout'
-
-        within 'fieldset#billing' do
-          fill_in 'First Name', :with => 'Jeff'
-          fill_in 'Last Name', :with => 'Squires'
-          fill_in 'order_bill_address_attributes_address1', :with => '123 Foo St'
-          fill_in 'City', :with => 'Fooville'
-          fill_in 'order_bill_address_attributes_state_name',:with => 'Alabama'
-          fill_in 'Zip', :with => '12345'
-          fill_in 'Phone', :with => '123-123-1234'
-        end
-
-        check "Use Billing Address"
-
-        click_button 'Save and Continue'
-
-        click_button 'Save and Continue'
+        begin_checkout
+        address_step
+        delivery_step
 
         page.should have_xpath("//table[@class='existing-credit-card-list']/tbody/tr", :text => credit_card.last_digits)
         choose 'existing_card'
