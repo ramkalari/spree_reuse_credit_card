@@ -16,5 +16,6 @@ Gem::Specification.new do |s|
   s.requirements << 'none'
 
   s.add_dependency 'spree_core', '~> 1.3.1'
+  s.add_development_dependency 'sass-rails'
 end
 
