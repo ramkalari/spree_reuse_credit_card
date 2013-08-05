@@ -33,7 +33,7 @@ function paymentPageResetCreditCardOptions() {
 
     // 'new card'is our only option now
     $('#use_existing_card_no').click();
-    // restoreContinueButton();
+    restoreContinueButton();
   } else {
     useExistingCardsInit();
   }
