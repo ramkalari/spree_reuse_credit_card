@@ -75,7 +75,7 @@ $(document).on('click','input[type="radio"][name="order[payments_attributes][][p
   ($('#payment-methods li')).hide();
   if (this.checked) {
     if ($('#payment_method_' + this.value).parent('ul').find('#card_notice').length > 0) {
-      disableContinueButton();
+      //disableContinueButton();
     } else {
       restoreContinueButton();
     }
@@ -103,9 +103,9 @@ function useExistingCardsInit() {
 }
 
 function disableContinueButton() {
-  if ($("#existing_cards input[type=radio]:checked").length == 0) {
+  /*if ($("#existing_cards input[type=radio]:checked").length == 0) {
     // temporarily rename & disable the save button if no cards are selected
     $(".form-buttons input[type=submit]").attr('disabled',true);
     $(".form-buttons input[type=submit]").val('Please Select a Card to Use');
-  }
+  }*/
 }
