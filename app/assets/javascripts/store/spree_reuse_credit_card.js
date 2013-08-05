@@ -99,7 +99,7 @@ function useExistingCardsInit() {
   $("[data-hook=card_expiration]").hide();
   $("[data-hook=cart_code]").hide(); // unfortunately this is a typo in spree (cart v card)
 
-  disableContinueButton();
+  //disableContinueButton();
 }
 
 function disableContinueButton() {
